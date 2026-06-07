@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindDrop — Authorization</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #ddd; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .box { text-align: center; max-width: 480px; padding: 48px 32px; background: #111; border: 1px solid #1f1f1f; border-radius: 16px; }
+    .logo { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 32px; }
+    .logo span { color: #FFD60A; }
+    .icon { font-size: 48px; margin-bottom: 20px; }
+    h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+    p { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 8px; }
+    .url-box { background: #0a0a0a; border: 1px solid #333; border-radius: 8px; padding: 12px 16px; margin: 24px 0; font-family: monospace; font-size: 12px; color: #FFD60A; word-break: break-all; text-align: left; }
+    .step { background: #0a0a0a; border: 1px solid #1f1f1f; border-radius: 8px; padding: 12px 16px; margin-top: 16px; text-align: left; font-size: 13px; color: #777; }
+    .step strong { color: #ccc; display: block; margin-bottom: 4px; }
+  </style>
+  <script>
+    window.onload = function() {
+      var urlBox = document.getElementById('current-url');
+      if (urlBox) urlBox.textContent = window.location.href;
+    };
+  </script>
+</head>
+<body>
+  <div class="box">
+    <div class="logo">Mind<span>Drop</span></div>
+    <div class="icon">✅</div>
+    <h1>Authorization successful</h1>
+    <p>TikTok has authorized MindDrop. Copy the full URL from your browser's address bar and paste it into the terminal where <code>tiktok_auth.py</code> is running.</p>
+    <div class="url-box" id="current-url">Loading URL...</div>
+    <div class="step">
+      <strong>What to do next:</strong>
+      Copy the entire URL above (including the <code>?code=...</code> part) and paste it into the terminal prompt.
+    </div>
+  </div>
+</body>
+</html>
