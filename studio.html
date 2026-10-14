@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <title>MindDrop — Publishing screen</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #ddd; }
+    a { color: #00D4FF; }
+    header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f1f1f; flex-wrap: wrap; gap: 12px; }
+    .logo { font-size: 20px; font-weight: 700; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .logo img { width: 28px; height: 28px; border-radius: 6px; }
+    .logo span { color: #00D4FF; }
+    header nav a { color: #aaa; text-decoration: none; margin-left: 20px; font-size: 14px; }
+    main { max-width: 1000px; margin: 0 auto; padding: 40px 24px 80px; }
+    h1 { font-size: 30px; color: #fff; margin-bottom: 10px; }
+    .intro { color: #888; font-size: 15px; line-height: 1.6; max-width: 720px; margin-bottom: 20px; }
+    .notice { background: #1a1600; border: 1px solid #4d4100; color: #FFD60A; border-radius: 10px; padding: 12px 16px; font-size: 13px; line-height: 1.6; margin-bottom: 32px; }
+    .mock { display: grid; grid-template-columns: 260px 1fr; gap: 28px; background: #111; border: 1px solid #1f1f1f; border-radius: 16px; padding: 28px; }
+    @media (max-width: 760px) { .mock { grid-template-columns: 1fr; } header { padding: 16px; } }
+    .phone { aspect-ratio: 9 / 16; background: linear-gradient(160deg, #062a33, #0a0a0a 55%, #2a2300); border: 1px solid #333; border-radius: 18px; display: flex; flex-direction: column; justify-content: flex-end; padding: 18px; position: relative; max-width: 260px; }
+    .phone .play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 42px; color: rgba(255,255,255,.6); }
+    .phone .cap { background: rgba(0,0,0,.6); border-radius: 6px; padding: 6px 8px; font-size: 12px; color: #fff; font-weight: 700; text-align: center; }
+    .phone-label { font-size: 12px; color: #666; margin-top: 8px; }
+    .field { margin-bottom: 18px; }
+    .field > label, .field > .lbl { display: block; font-size: 13px; color: #aaa; margin-bottom: 6px; font-weight: 600; }
+    .account { display: flex; align-items: center; gap: 10px; background: #0a0a0a; border: 1px solid #222; border-radius: 10px; padding: 10px 12px; }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #888; }
+    .account .nick { color: #fff; font-weight: 600; font-size: 14px; }
+    .account .sub { color: #666; font-size: 12px; }
+    input[type=text], select { width: 100%; background: #0a0a0a; border: 1px solid #2a2a2a; color: #ddd; border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: inherit; }
+    .checks label { display: inline-flex; align-items: center; gap: 6px; margin-right: 18px; font-size: 14px; color: #bbb; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; background: #0a0a0a; border: 1px solid #222; border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+    .hint { font-size: 12px; color: #666; margin-top: 6px; line-height: 1.5; }
+    .consent { font-size: 12px; color: #888; line-height: 1.6; margin: 18px 0 14px; }
+    .post { background: #FFD60A; color: #000; border: 0; border-radius: 10px; padding: 12px 26px; font-weight: 800; font-size: 15px; opacity: .55; cursor: not-allowed; }
+    fieldset { border: 0; }
+    .legend { margin-top: 32px; font-size: 14px; color: #888; line-height: 1.7; }
+    .legend li { margin-left: 18px; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo" href="index.html"><img src="icon.png" alt="">Mind<span>Drop</span></a>
+    <nav><a href="index.html">Home</a><a href="index.html#how">How it works</a><a href="privacy.html">Privacy</a><a href="tos.html">Terms</a></nav>
+  </header>
+  <main>
+    <h1>Review &amp; post to TikTok</h1>
+    <p class="intro">After you connect your TikTok account, every video MindDrop generates goes through this review screen. You decide what is posted, with which caption and privacy setting. Nothing is uploaded to TikTok until you press <strong>Post to TikTok</strong>.</p>
+    <div class="notice"><strong>Illustration only.</strong> This page shows the layout of the MindDrop publishing screen; the controls below are disabled and nothing on this page connects to TikTok or posts content. In the live screen, the options come from your TikTok account (creator info) at the moment you open it.</div>
+
+    <div class="mock" aria-label="Publishing screen illustration">
+      <div>
+        <div class="phone"><div class="play">▶</div><div class="cap">What if the Moon disappeared tonight?</div></div>
+        <p class="phone-label">Video preview (plays before posting)</p>
+      </div>
+      <fieldset disabled>
+        <div class="field">
+          <span class="lbl">Posting to</span>
+          <div class="account"><div class="avatar">👤</div><div><div class="nick">@your_tiktok_nickname</div><div class="sub">Your TikTok display name and avatar appear here</div></div></div>
+        </div>
+        <div class="field">
+          <label for="title">Caption</label>
+          <input id="title" type="text" value="What if the Moon disappeared tonight? 🌙 #science #thelab">
+          <p class="hint">Suggested by MindDrop &mdash; fully editable, including hashtags.</p>
+        </div>
+        <div class="field">
+          <label for="privacy">Who can view this video</label>
+          <select id="privacy"><option selected>Select privacy (required)</option><option>Everyone</option><option>Friends</option><option>Only me</option></select>
+          <p class="hint">No option is pre-selected. Only the options allowed by your TikTok account are listed.</p>
+        </div>
+        <div class="field checks">
+          <span class="lbl">Allow users to</span>
+          <label><input type="checkbox"> Comment</label><label><input type="checkbox"> Duet</label><label><input type="checkbox"> Stitch</label>
+          <p class="hint">All unchecked by default; options you disabled in TikTok are greyed out.</p>
+        </div>
+        <div class="field">
+          <div class="toggle-row"><span>Disclose video content (commercial content)</span><input type="checkbox" aria-label="Disclose commercial content"></div>
+          <p class="hint">Off by default. When on, choose &ldquo;Your brand&rdquo; and/or &ldquo;Branded content&rdquo;; the matching label (&ldquo;Promotional content&rdquo; / &ldquo;Paid partnership&rdquo;) is shown and branded content cannot be private.</p>
+        </div>
+        <p class="consent">By posting, you agree to TikTok&rsquo;s <a href="https://www.tiktok.com/legal/page/global/music-usage-confirmation/en" target="_blank" rel="noopener">Music Usage Confirmation</a>.</p>
+        <button class="post" type="button">Post to TikTok</button>
+        <p class="hint">After posting: &ldquo;Your video is being processed by TikTok. It may take a few minutes to appear on your profile.&rdquo;</p>
+      </fieldset>
+    </div>
+
+    <ul class="legend">
+      <li>Data used on this screen: your TikTok display name and avatar (scope <code>user.info.basic</code>) and the video you approved (scopes <code>video.upload</code>, <code>video.publish</code>).</li>
+      <li>MindDrop adds no watermark or promotional branding to your video.</li>
+      <li>You can disconnect MindDrop at any time in TikTok: Settings and privacy &rsaquo; Security &rsaquo; Manage app permissions.</li>
+    </ul>
+  </main>
+</body>
+</html>

@@ -4,123 +4,175 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="favicon.png">
-  <title>MindDrop — AI-Powered Short Video Creator</title>
+  <title>MindDrop — Science shorts, created for you, posted by you</title>
+  <meta name="description" content="MindDrop creates short science videos (The Lab series) and lets you review and post them to your TikTok account with the TikTok Content Posting API.">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #fff; }
-    header { padding: 24px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f1f1f; }
-    .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
+    :root { --bg: #0a0a0a; --card: #111; --line: #1f1f1f; --accent: #00D4FF; --yellow: #FFD60A; --muted: #888; --dim: #666; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: #fff; }
+    a { color: var(--accent); }
+    header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); gap: 16px; flex-wrap: wrap; }
+    .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
     .logo img { width: 32px; height: 32px; border-radius: 8px; }
-    .logo .logotext { color: #fff; }
-    .logo .drop { color: #00D4FF; }
-    nav a { color: #aaa; text-decoration: none; margin-left: 28px; font-size: 14px; }
-    nav a:hover { color: #fff; }
-    .hero { text-align: center; padding: 100px 24px 80px; max-width: 760px; margin: 0 auto; }
-    .badge { display: inline-block; background: #1a1a1a; border: 1px solid #333; border-radius: 20px; padding: 6px 16px; font-size: 12px; color: #00D4FF; margin-bottom: 32px; letter-spacing: 0.5px; text-transform: uppercase; }
-    h1 { font-size: clamp(36px, 6vw, 60px); font-weight: 800; line-height: 1.1; margin-bottom: 24px; }
-    h1 span { color: #00D4FF; }
-    .subtitle { font-size: 18px; color: #888; line-height: 1.6; max-width: 560px; margin: 0 auto 48px; }
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; padding: 0 40px 80px; max-width: 1100px; margin: 0 auto; }
-    .card { background: #111; border: 1px solid #1f1f1f; border-radius: 12px; padding: 28px; }
-    .card .icon { font-size: 28px; margin-bottom: 14px; }
+    .logo .drop { color: var(--accent); }
+    header nav { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 24px; }
+    header nav a { color: #aaa; text-decoration: none; font-size: 14px; }
+    header nav a:hover { color: #fff; }
+
+    /* "Continue with TikTok" button: black/white TikTok mark, high contrast */
+    .btn-tiktok { display: inline-flex; align-items: center; justify-content: center; gap: 10px; background: #fff; color: #000 !important; border: 0; border-radius: 10px; padding: 14px 26px; font-size: 16px; font-weight: 700; text-decoration: none; cursor: pointer; font-family: inherit; box-shadow: 0 0 0 1px #fff, 0 8px 30px rgba(0, 212, 255, 0.25); transition: transform .12s ease, box-shadow .12s ease; }
+    .btn-tiktok:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px #fff, 0 10px 36px rgba(0, 212, 255, 0.4); }
+    .btn-tiktok:focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
+    .btn-tiktok svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .btn-tiktok.small { padding: 9px 16px; font-size: 14px; border-radius: 8px; box-shadow: none; }
+    .btn-tiktok.small svg { width: 16px; height: 16px; }
+
+    .hero { text-align: center; padding: 90px 24px 70px; max-width: 780px; margin: 0 auto; }
+    .badge { display: inline-block; background: #1a1a1a; border: 1px solid #333; border-radius: 20px; padding: 6px 16px; font-size: 12px; color: var(--yellow); margin-bottom: 28px; letter-spacing: 0.5px; text-transform: uppercase; }
+    h1 { font-size: clamp(36px, 6vw, 58px); font-weight: 800; line-height: 1.1; margin-bottom: 22px; }
+    h1 span { color: var(--accent); }
+    .subtitle { font-size: 18px; color: var(--muted); line-height: 1.6; max-width: 600px; margin: 0 auto 36px; }
+    .cta-note { font-size: 13px; color: var(--dim); margin-top: 16px; line-height: 1.6; }
+    .cta-note a { color: #aaa; }
+
+    section h2 { font-size: 28px; font-weight: 700; margin-bottom: 12px; text-align: center; }
+    section .lead { text-align: center; color: var(--dim); font-size: 15px; margin-bottom: 36px; }
+
+    .how { padding: 20px 24px 80px; max-width: 1000px; margin: 0 auto; }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .step { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 26px; position: relative; }
+    .step-num { background: var(--accent); color: #000; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; margin-bottom: 16px; }
+    .step:nth-child(3) .step-num { background: var(--yellow); }
+    .step h3 { font-size: 17px; margin-bottom: 8px; }
+    .step p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .step ul { margin: 10px 0 0 18px; font-size: 13px; color: var(--dim); line-height: 1.7; }
+
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; padding: 0 24px 80px; max-width: 1000px; margin: 0 auto; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 26px; }
+    .card .icon { font-size: 26px; margin-bottom: 12px; }
     .card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-    .card p { font-size: 14px; color: #666; line-height: 1.6; }
-    .how { padding: 0 40px 80px; max-width: 800px; margin: 0 auto; }
-    .how h2 { font-size: 28px; font-weight: 700; margin-bottom: 32px; text-align: center; }
-    .step { display: flex; gap: 20px; margin-bottom: 24px; align-items: flex-start; }
-    .step-num { background: #00D4FF; color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
-    .step-content h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-    .step-content p { font-size: 14px; color: #666; }
-    footer { border-top: 1px solid #1f1f1f; padding: 32px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .card p { font-size: 14px; color: var(--dim); line-height: 1.6; }
+
+    .permissions { max-width: 760px; margin: 0 auto 80px; padding: 0 24px; }
+    .perm-box { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--yellow); border-radius: 12px; padding: 24px 28px; }
+    .perm-box h3 { font-size: 16px; margin-bottom: 12px; }
+    .perm-box li { font-size: 14px; color: var(--muted); line-height: 1.7; margin-left: 18px; }
+    .perm-box code { color: var(--accent); font-size: 13px; }
+    .perm-box p { font-size: 13px; color: var(--dim); margin-top: 12px; line-height: 1.6; }
+
+    .final-cta { text-align: center; padding: 0 24px 90px; }
+
+    footer { border-top: 1px solid var(--line); padding: 32px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
     footer .copy { font-size: 13px; color: #555; }
-    footer nav a { color: #555; text-decoration: none; margin-left: 24px; font-size: 13px; }
-    footer nav a:hover { color: #aaa; }
+    footer nav a { color: #777; text-decoration: none; margin-left: 24px; font-size: 13px; }
+    footer nav a:hover { color: #ccc; }
+    @media (max-width: 600px) {
+      header { padding: 16px; }
+      footer { padding: 24px 16px; }
+      footer nav a { margin: 0 16px 0 0; }
+      .hero { padding: 60px 16px 50px; }
+    }
   </style>
+  <script src="tiktok-login.js" defer></script>
 </head>
 <body>
   <header>
-    <div class="logo"><img src="icon.png" alt="MindDrop"><span class="logotext">Mind<span class="drop">Drop</span></span></div>
+    <a class="logo" href="index.html"><img src="icon.png" alt="MindDrop"><span>Mind<span class="drop">Drop</span></span></a>
     <nav>
-      <a href="#features">Features</a>
       <a href="#how">How it works</a>
+      <a href="studio.html">Publishing screen</a>
       <a href="tos.html">Terms</a>
       <a href="privacy.html">Privacy</a>
+      <a href="#" class="btn-tiktok small" data-tiktok-login aria-label="Log in with TikTok">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+        Log in
+      </a>
     </nav>
   </header>
 
   <section class="hero">
-    <div class="badge">AI-Powered Content</div>
-    <h1>Go viral on<br><span>autopilot</span></h1>
-    <p class="subtitle">MindDrop automatically creates and publishes short-form videos to TikTok, YouTube Shorts, and Instagram Reels — powered by AI.</p>
+    <div class="badge">Science shorts &middot; The Lab</div>
+    <h1>Science &ldquo;what ifs&rdquo;,<br><span>ready to post</span></h1>
+    <p class="subtitle">MindDrop creates short animated science videos &mdash; starring <strong>Le Savant</strong> and <strong>Subject&nbsp;47</strong> &mdash; and lets you review, customize and post them to your own TikTok account.</p>
+    <a href="#" class="btn-tiktok" id="login-tiktok" data-tiktok-login>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+      Continue with TikTok
+    </a>
+    <p class="cta-note">You will be redirected to TikTok to log in and approve access.<br>By continuing you agree to our <a href="tos.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</p>
+  </section>
+
+  <section class="how" id="how">
+    <h2>How it works</h2>
+    <p class="lead">Nothing is ever posted without your review and explicit confirmation.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Connect your TikTok account</h3>
+        <p>Click &ldquo;Continue with TikTok&rdquo;, log in on TikTok and approve the permissions MindDrop asks for. You can revoke access at any time from your TikTok settings.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>MindDrop generates your video</h3>
+        <p>MindDrop writes, voices and animates a short &ldquo;what if&rdquo; science episode of <em>The Lab</em>, with captions, and prepares a suggested title and hashtags.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>You review it and post</h3>
+        <p>You preview the video, edit the title, choose who can view it and your interaction settings, then post it via the TikTok Content Posting API.</p>
+        <ul>
+          <li>Posting to: your TikTok nickname is shown</li>
+          <li>Privacy: you choose (no default)</li>
+          <li>Comments / Duet / Stitch: off until you enable them</li>
+          <li>Commercial content disclosure when relevant</li>
+        </ul>
+      </div>
+    </div>
+    <p class="cta-note" style="text-align:center;margin-top:24px"><a href="studio.html">See the publishing screen &rarr;</a></p>
+  </section>
+
+  <section class="permissions" id="permissions">
+    <div class="perm-box">
+      <h3>What MindDrop asks TikTok for</h3>
+      <ul>
+        <li><code>user.info.basic</code> &mdash; your open_id, display name and avatar, to show which account you are posting to.</li>
+        <li><code>video.upload</code> &amp; <code>video.publish</code> &mdash; to send the video you approved to your TikTok account (Content Posting API).</li>
+      </ul>
+      <p>MindDrop never sees your TikTok password, does not read your followers, messages or other videos, and never posts without your confirmation. Details in our <a href="privacy.html">Privacy Policy</a>.</p>
+    </div>
   </section>
 
   <section class="features" id="features">
     <div class="card">
-      <div class="icon">🤖</div>
-      <h3>AI Script Generation</h3>
-      <p>GPT-powered scripts optimized for engagement, hooks, and viral potential in your niche.</p>
+      <div class="icon">🧪</div>
+      <h3>The Lab series</h3>
+      <p>Recurring characters Le Savant and Subject 47 explain one science &ldquo;what if&rdquo; per episode.</p>
     </div>
     <div class="card">
       <div class="icon">🎙️</div>
-      <h3>HD Text-to-Speech</h3>
-      <p>Studio-quality voiceover with natural rhythm and intonation. No recording needed.</p>
+      <h3>Voice &amp; captions</h3>
+      <p>Natural voiceover and readable burned-in captions, formatted for vertical 9:16 video.</p>
     </div>
     <div class="card">
-      <div class="icon">🎬</div>
-      <h3>Auto Video Editing</h3>
-      <p>Stock footage, Ken Burns effects, viral subtitles, and background music — assembled automatically.</p>
+      <div class="icon">👀</div>
+      <h3>You stay in control</h3>
+      <p>Preview every video, edit the caption and choose privacy and interaction settings before posting.</p>
     </div>
     <div class="card">
       <div class="icon">📱</div>
-      <h3>Multi-Platform Publishing</h3>
-      <p>Publishes directly to TikTok, YouTube Shorts, and Instagram Reels via official APIs.</p>
-    </div>
-    <div class="card">
-      <div class="icon">📊</div>
-      <h3>Analytics</h3>
-      <p>Tracks views, engagement, and growth across platforms automatically.</p>
-    </div>
-    <div class="card">
-      <div class="icon">⚡</div>
-      <h3>Fully Automated</h3>
-      <p>Set it once, runs daily. 3 videos per day with zero manual intervention.</p>
+      <h3>Official APIs only</h3>
+      <p>TikTok Login Kit and the TikTok Content Posting API &mdash; no scraping, no password sharing.</p>
     </div>
   </section>
 
-  <section class="how" id="how">
-    <h2>How MindDrop works</h2>
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <h4>Trend Detection</h4>
-        <p>MindDrop monitors Google Trends and social signals to identify high-potential topics in your niche.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <h4>Script &amp; Voice</h4>
-        <p>AI generates an optimized script with hook, body, and CTA. Text-to-speech renders a natural HD voiceover.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <h4>Video Production</h4>
-        <p>Relevant stock footage is matched to each segment, edited with transitions, captions, and music.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-content">
-        <h4>Publishing</h4>
-        <p>The finished video is published to TikTok, YouTube Shorts, and Instagram Reels via official platform APIs.</p>
-      </div>
-    </div>
+  <section class="final-cta">
+    <a href="#" class="btn-tiktok" data-tiktok-login>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+      Continue with TikTok
+    </a>
   </section>
 
   <footer>
-    <span class="copy">&copy; 2026 MindDrop. All rights reserved.</span>
+    <span class="copy">&copy; 2026 MindDrop. All rights reserved. TikTok is a trademark of ByteDance Ltd.; MindDrop is not affiliated with or endorsed by TikTok.</span>
     <nav>
       <a href="tos.html">Terms of Service</a>
       <a href="privacy.html">Privacy Policy</a>

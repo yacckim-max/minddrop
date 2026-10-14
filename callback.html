@@ -3,38 +3,166 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
   <link rel="icon" type="image/png" href="favicon.png">
-  <title>MindDrop — Authorization</title>
+  <title>MindDrop — TikTok connection</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #ddd; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-    .box { text-align: center; max-width: 480px; padding: 48px 32px; background: #111; border: 1px solid #1f1f1f; border-radius: 16px; }
-    .logo { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 32px; }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #ddd; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 24px 16px; }
+    .box { text-align: center; width: 100%; max-width: 520px; padding: 44px 32px; background: #111; border: 1px solid #1f1f1f; border-radius: 16px; }
+    .logo { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 28px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .logo img { width: 28px; height: 28px; border-radius: 6px; }
     .logo span { color: #00D4FF; }
-    .icon { font-size: 48px; margin-bottom: 20px; }
-    h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 12px; }
-    p { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 8px; }
-    .url-box { background: #0a0a0a; border: 1px solid #333; border-radius: 8px; padding: 12px 16px; margin: 24px 0; font-family: monospace; font-size: 12px; color: #00D4FF; word-break: break-all; text-align: left; }
-    .step { background: #0a0a0a; border: 1px solid #1f1f1f; border-radius: 8px; padding: 12px 16px; margin-top: 16px; text-align: left; font-size: 13px; color: #777; }
-    .step strong { color: #ccc; display: block; margin-bottom: 4px; }
+    .icon { font-size: 46px; margin-bottom: 16px; }
+    h1 { font-size: 22px; font-weight: 700; color: #fff; margin: 0 0 12px; }
+    p { font-size: 14px; color: #888; line-height: 1.6; margin: 0 0 10px; }
+    .state { display: none; }
+    .state.active { display: block; }
+    .scopes { text-align: left; background: #0a0a0a; border: 1px solid #1f1f1f; border-radius: 10px; padding: 14px 18px; margin: 18px 0; font-size: 13px; color: #999; }
+    .scopes li { margin: 4px 0 4px 16px; }
+    .scopes code { color: #00D4FF; }
+    .err { color: #ff8a8a; font-family: monospace; font-size: 12px; background: #1a0d0d; border: 1px solid #3a1a1a; border-radius: 8px; padding: 10px 12px; text-align: left; word-break: break-word; margin: 14px 0; }
+    .btn { display: inline-block; margin-top: 14px; background: #fff; color: #000; text-decoration: none; font-weight: 700; padding: 11px 20px; border-radius: 10px; font-size: 14px; }
+    .btn.ghost { background: transparent; color: #aaa; border: 1px solid #333; margin-left: 6px; }
+    details { margin-top: 26px; text-align: left; border-top: 1px solid #1f1f1f; padding-top: 16px; }
+    summary { cursor: pointer; font-size: 13px; color: #FFD60A; }
+    .url-box { background: #0a0a0a; border: 1px solid #333; border-radius: 8px; padding: 12px 14px; margin: 12px 0; font-family: monospace; font-size: 12px; color: #00D4FF; word-break: break-all; }
+    .copy { background: #00D4FF; color: #000; border: 0; border-radius: 8px; padding: 8px 14px; font-weight: 700; cursor: pointer; font-size: 13px; }
+    .small { font-size: 12px; color: #666; }
   </style>
-  <script>
-    window.onload = function() {
-      var urlBox = document.getElementById('current-url');
-      if (urlBox) urlBox.textContent = window.location.href;
-    };
-  </script>
 </head>
 <body>
   <div class="box">
-    <div class="logo">MindDrop</div>
-    <div class="icon">✅</div>
-    <h1>Authorization successful</h1>
-    <p>TikTok has authorized MindDrop. Copy the full URL from your browser's address bar and paste it into the terminal where <code>tiktok_auth.py</code> is running.</p>
-    <div class="url-box" id="current-url">Loading URL...</div>
-    <div class="step">
-      <strong>What to do next:</strong>
-      Copy the entire URL above (including the <code>?code=...</code> part) and paste it into the terminal prompt.
+    <a class="logo" href="index.html"><img src="icon.png" alt="">Mind<span>Drop</span></a>
+
+    <!-- Success: login started from this website, state verified -->
+    <div class="state" id="state-success">
+      <div class="icon">✅</div>
+      <h1>Your TikTok account is connected to MindDrop</h1>
+      <p>Thanks! TikTok confirmed your authorization. MindDrop will show your TikTok display name and avatar on the publishing screen, so you always know which account a video goes to.</p>
+      <div class="scopes" id="granted-wrap">
+        <strong style="color:#ccc">Permissions you granted:</strong>
+        <ul id="granted-list"></ul>
+      </div>
+      <p class="small">For your security this page never receives or stores access tokens: the one-time authorization code is exchanged server-side by the MindDrop studio, which then loads your profile. You can revoke access any time in TikTok: Settings and privacy &rsaquo; Security &rsaquo; Manage app permissions.</p>
+      <a class="btn" href="studio.html">See how publishing works</a>
     </div>
+
+    <!-- Code received but no login was started from this browser (e.g. operator CLI flow) -->
+    <div class="state" id="state-external">
+      <div class="icon">🔑</div>
+      <h1>Authorization received</h1>
+      <p>TikTok returned an authorization code, but this browser did not start the login from the MindDrop website. If you started the connection from the MindDrop studio (command line), complete it using the <strong>Operator</strong> section below.</p>
+      <a class="btn ghost" href="index.html">Back to MindDrop</a>
+    </div>
+
+    <!-- Errors -->
+    <div class="state" id="state-denied">
+      <div class="icon">⚠️</div>
+      <h1>TikTok connection was not completed</h1>
+      <p>TikTok did not authorize MindDrop. Nothing was connected and nothing will be posted.</p>
+      <div class="err" id="err-detail"></div>
+      <a class="btn" href="index.html#how">Try again</a>
+    </div>
+
+    <div class="state" id="state-csrf">
+      <div class="icon">🛑</div>
+      <h1>Security check failed</h1>
+      <p>The response from TikTok does not match the login request started in this browser (invalid <code>state</code>). For your protection the connection was rejected. Please start again from the MindDrop website.</p>
+      <a class="btn" href="index.html">Start again</a>
+    </div>
+
+    <div class="state" id="state-empty">
+      <div class="icon">🔗</div>
+      <h1>Nothing to process</h1>
+      <p>This page receives the response from TikTok after you log in. Start from the MindDrop home page.</p>
+      <a class="btn" href="index.html">Continue with TikTok</a>
+    </div>
+
+    <details id="operator" hidden>
+      <summary>Operator: complete the connection from the studio CLI</summary>
+      <p class="small" style="margin-top:10px">If the connection was started with <code>scripts/tiktok_auth.py</code>, copy this full URL (including <code>?code=…&amp;state=…</code>) and paste it into the terminal prompt.</p>
+      <div class="url-box" id="current-url"></div>
+      <button class="copy" id="copy-btn" type="button">Copy URL</button>
+      <span class="small" id="copy-msg"></span>
+    </details>
   </div>
+
+  <script>
+  (function () {
+    'use strict';
+    var STATE_KEY = 'minddrop_tiktok_oauth_state';
+    var MAX_AGE_MS = 30 * 60 * 1000;
+    var SCOPE_LABELS = {
+      'user.info.basic': 'Read your basic profile (open_id, display name, avatar)',
+      'video.upload': 'Upload videos you approve to your TikTok account',
+      'video.publish': 'Post videos you approve to your TikTok profile'
+    };
+
+    var q = new URLSearchParams(window.location.search);
+    var code = q.get('code');
+    var state = q.get('state');
+    var error = q.get('error');
+
+    function show(id) { document.getElementById(id).classList.add('active'); }
+
+    function readSavedState() {
+      try {
+        var raw = sessionStorage.getItem(STATE_KEY);
+        if (!raw) return null;
+        var saved = JSON.parse(raw);
+        if (!saved || !saved.value || (Date.now() - saved.created) > MAX_AGE_MS) return null;
+        return saved.value;
+      } catch (e) { return null; }
+    }
+    function clearSavedState() { try { sessionStorage.removeItem(STATE_KEY); } catch (e) {} }
+
+    var saved = readSavedState();
+
+    if (error) {
+      var desc = q.get('error_description') || '';
+      document.getElementById('err-detail').textContent = error + (desc ? ' — ' + desc : '');
+      clearSavedState();
+      show('state-denied');
+    } else if (code && saved) {
+      clearSavedState();
+      if (state === saved) {
+        var list = document.getElementById('granted-list');
+        var scopes = (q.get('scopes') || '').split(',').filter(Boolean);
+        if (!scopes.length) { document.getElementById('granted-wrap').style.display = 'none'; }
+        scopes.forEach(function (s) {
+          var li = document.createElement('li');
+          var c = document.createElement('code'); c.textContent = s;
+          li.appendChild(c);
+          li.appendChild(document.createTextNode(' — ' + (SCOPE_LABELS[s] || 'Granted')));
+          list.appendChild(li);
+        });
+        show('state-success');
+      } else {
+        show('state-csrf');
+      }
+    } else if (code) {
+      show('state-external');
+    } else {
+      show('state-empty');
+    }
+
+    // Operator block: full callback URL for scripts/tiktok_auth.py (CLI flow compatibility).
+    if (code) {
+      var op = document.getElementById('operator');
+      op.hidden = false;
+      if (!saved) op.open = true;
+      document.getElementById('current-url').textContent = window.location.href;
+      document.getElementById('copy-btn').addEventListener('click', function () {
+        var msg = document.getElementById('copy-msg');
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(window.location.href).then(function () { msg.textContent = ' Copied.'; },
+            function () { msg.textContent = ' Select the URL and copy it manually.'; });
+        } else { msg.textContent = ' Select the URL and copy it manually.'; }
+      });
+    }
+  })();
+  </script>
 </body>
 </html>
